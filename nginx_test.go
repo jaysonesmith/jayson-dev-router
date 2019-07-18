@@ -17,8 +17,8 @@ func TestNGINX(t *testing.T) {
 		proxyPassHeader string
 	}{
 		"Root":  {"/", 200, "https://jayson-dev.netlify.com/"},
-		"Blog":  {"/blog", 200, "https://jayson-dev.netlify.com/blog/"},
-		"About": {"/about", 200, "https://jayson-dev.netlify.com/about/"},
+		"Blog":  {"/blog", 200, "https://jayson-dev.netlify.com/blog"},
+		"About": {"/about", 200, "https://jayson-dev.netlify.com/about"},
 	}
 
 	for name, tc := range testCases {
