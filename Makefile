@@ -11,3 +11,7 @@ stop:
 rebuild: 
 	make stop
 	make build_run
+
+.PHONY: deploy
+deploy: 
+	git push heroku master
