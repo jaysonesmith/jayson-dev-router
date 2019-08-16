@@ -1,0 +1,56 @@
+version: 2.1
+executor:
+  ruby:
+    docker:
+      - image: circleci/go:1.12.4
+
+jobs:
+  prod_build_and_deploy:
+    executor: ruby
+    steps:
+      - attach_workspace:
+          at: ~/data
+      - checkout
+      - docker
+      - heroku:
+          app: "cucumber-io-proxy"
+    
+  staging_build_and_deploy:
+    executor: ruby
+    steps:
+      - checkout
+      - docker
+      - heroku:
+          app: "cucumber-io-proxy-staging"
+
+  local_test:
+    executor: ruby
+    steps:
+      - checkout
+      - nginx
+      - test
+  
+  staging_test:
+    executor: ruby
+    steps:
+      - checkout
+      - test:
+          base_url: "https://cucumber-io-proxy-staging.herokuapp.com"
+
+workflows:
+  version: 2
+  test:
+    jobs:
+      - local_test
+      - staging_build_and_deploy:
+          requires:
+            - local_test
+      - staging_test:
+          requires:
+            - staging_build_and_deploy
+      - prod_build_and_deploy:
+          requires:
+            - staging_test
+          filters:
+            branches:
+              only: master
